@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sql_mark3_flutter/list_page.dart';
 import 'package:sql_mark3_flutter/success_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'Database.dart';
 
@@ -105,8 +106,18 @@ void validate(){
                   onPressed: ()async{
                     validate();
                   if(empty_check!=true){
-                    int response = await sqlDb.insertdata("INSERT INTO 'notes' Values('$username','$password')");
-                    print(response);
+                    var response = await sqlDb.check_data(username);
+                    if(response.length==0){
+                      int response_insert = await sqlDb.insertdata("INSERT INTO 'notes' Values('$username','$password')");
+                      print(response_insert);
+                      Fluttertoast.showToast(msg: "new account created");
+                    }
+                    else{
+                      username_check=true;
+                      Fluttertoast.showToast(msg: "user already exist");
+
+                    }
+
 
                   }else{
                     return print('empty');
